@@ -1,6 +1,10 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 
+plugins {
+  id "com.commercehub.gradle.plugin.avro-base" version "0.9.1"
+}
+
 repositories {
   jcenter()
 }
