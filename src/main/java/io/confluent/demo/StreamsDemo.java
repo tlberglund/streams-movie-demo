@@ -38,6 +38,9 @@ public class StreamsDemo {
       final SpecificAvroSerde<Rating> ratingSerde = new SpecificAvroSerde<>();
       ratingSerde.configure(serdeConfig, false);
 
+      final SpecificAvroSerde<RatedMovie> ratedMovieSerde = new SpecificAvroSerde<>();
+      ratingSerde.configure(serdeConfig, false);
+
 
       KStreamBuilder builder = new KStreamBuilder();
 
@@ -64,9 +67,27 @@ public class StreamsDemo {
       KTable<Long, Movie> movies = builder.table(Serdes.Long(), movieSerde, "movies", "movie-store");
 
       KStream<Long, RatedMovie> ratedMovies = ratings.join(movies,
-              (rating,movie) -> new RatedMovie(movie.getMovieId(), movie.getTitle().toString(), movie.getReleaseDate(), rating.getRating()));
+              (rating, movie) -> new RatedMovie(movie.getMovieId(), movie.getTitle().toString(), movie.getReleaseDate(), rating.getRating()),
+              Serdes.Long(),
+              ratingSerde);
+//      ratedMovies.print();
+/*
+      KTable<Long, Float> longCounts = ratings.countByKey();
 
-      ratedMovies.print();
+      // In another ktable, sum the values on a ten second tumbling window.
+      KTable<Windowed<String>, Long> longSums =
+              longs.reduceByKey((v1, v2) -> v1 + v2,
+                      TimeWindows.of("longSums", 10000L),
+                      Serdes.String(),
+                      Serdes.Long());
+
+      // We can join the two tables to get the average.
+      KTable<Windowed<String>, Double> longAvgs =
+              longSums.join(longCounts,
+                      (sum, count) ->
+                              sum.doubleValue()/count.doubleValue());
+
+*/
 
 
       KafkaStreams streams = new KafkaStreams(builder, streamsConfiguration);
