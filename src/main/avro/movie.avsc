@@ -16,10 +16,6 @@
       "type": "int"
     },
     {
-      "name": "card",
-      "type": "string"
-    },
-    {
       "name": "country",
       "type": "string"
     },
@@ -61,6 +57,10 @@
         "type": "array",
         "items": "string"
       }
+    },
+    {
+      "name": "cinematographer",
+      "type": "string"
     },
     {
       "name": "production_companies",

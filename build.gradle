@@ -1,14 +1,21 @@
+plugins {
+//  id "com.commercehub.gradle.plugin.avro-base" version "0.9.1"
+}
+
 apply plugin: 'java'
 apply plugin: 'idea'
 
-plugins {
-  id "com.commercehub.gradle.plugin.avro-base" version "0.9.1"
-}
-
 repositories {
   jcenter()
+  maven {
+    url 'http://packages.confluent.io/maven/'
+  }
 }
 
 dependencies {
   compile 'org.apache.kafka:kafka-streams:0.11.0.0'
+  compile 'io.confluent:kafka-streams-avro-serde:3.3.0'
+//  compile 'io.confluent:kafka-avro-serializer:3.3.0'
+//  compile 'io.confluent:kafka-schema-registry-client:3.3.0'
 }
+
