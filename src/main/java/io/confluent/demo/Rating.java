@@ -13,8 +13,8 @@ import org.apache.avro.message.SchemaStore;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class Rating extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 4553930247857180038L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Rating\",\"namespace\":\"io.confluent.demo\",\"fields\":[{\"name\":\"movie_id\",\"type\":\"int\"},{\"name\":\"rating\",\"type\":\"float\"}]}");
+  private static final long serialVersionUID = -5833296762810771925L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Rating\",\"namespace\":\"io.confluent.demo\",\"fields\":[{\"name\":\"movie_id\",\"type\":\"long\"},{\"name\":\"rating\",\"type\":\"float\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -51,7 +51,7 @@ public class Rating extends org.apache.avro.specific.SpecificRecordBase implemen
     return DECODER.decode(b);
   }
 
-  @Deprecated public int movie_id;
+  @Deprecated public long movie_id;
   @Deprecated public float rating;
 
   /**
@@ -66,7 +66,7 @@ public class Rating extends org.apache.avro.specific.SpecificRecordBase implemen
    * @param movie_id The new value for movie_id
    * @param rating The new value for rating
    */
-  public Rating(java.lang.Integer movie_id, java.lang.Float rating) {
+  public Rating(java.lang.Long movie_id, java.lang.Float rating) {
     this.movie_id = movie_id;
     this.rating = rating;
   }
@@ -85,7 +85,7 @@ public class Rating extends org.apache.avro.specific.SpecificRecordBase implemen
   @SuppressWarnings(value="unchecked")
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
-    case 0: movie_id = (java.lang.Integer)value$; break;
+    case 0: movie_id = (java.lang.Long)value$; break;
     case 1: rating = (java.lang.Float)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
@@ -95,7 +95,7 @@ public class Rating extends org.apache.avro.specific.SpecificRecordBase implemen
    * Gets the value of the 'movie_id' field.
    * @return The value of the 'movie_id' field.
    */
-  public java.lang.Integer getMovieId() {
+  public java.lang.Long getMovieId() {
     return movie_id;
   }
 
@@ -103,7 +103,7 @@ public class Rating extends org.apache.avro.specific.SpecificRecordBase implemen
    * Sets the value of the 'movie_id' field.
    * @param value the value to set.
    */
-  public void setMovieId(java.lang.Integer value) {
+  public void setMovieId(java.lang.Long value) {
     this.movie_id = value;
   }
 
@@ -155,7 +155,7 @@ public class Rating extends org.apache.avro.specific.SpecificRecordBase implemen
   public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<Rating>
     implements org.apache.avro.data.RecordBuilder<Rating> {
 
-    private int movie_id;
+    private long movie_id;
     private float rating;
 
     /** Creates a new Builder */
@@ -199,7 +199,7 @@ public class Rating extends org.apache.avro.specific.SpecificRecordBase implemen
       * Gets the value of the 'movie_id' field.
       * @return The value.
       */
-    public java.lang.Integer getMovieId() {
+    public java.lang.Long getMovieId() {
       return movie_id;
     }
 
@@ -208,7 +208,7 @@ public class Rating extends org.apache.avro.specific.SpecificRecordBase implemen
       * @param value The value of 'movie_id'.
       * @return This builder.
       */
-    public io.confluent.demo.Rating.Builder setMovieId(int value) {
+    public io.confluent.demo.Rating.Builder setMovieId(long value) {
       validate(fields()[0], value);
       this.movie_id = value;
       fieldSetFlags()[0] = true;
@@ -276,7 +276,7 @@ public class Rating extends org.apache.avro.specific.SpecificRecordBase implemen
     public Rating build() {
       try {
         Rating record = new Rating();
-        record.movie_id = fieldSetFlags()[0] ? this.movie_id : (java.lang.Integer) defaultValue(fields()[0]);
+        record.movie_id = fieldSetFlags()[0] ? this.movie_id : (java.lang.Long) defaultValue(fields()[0]);
         record.rating = fieldSetFlags()[1] ? this.rating : (java.lang.Float) defaultValue(fields()[1]);
         return record;
       } catch (java.lang.Exception e) {

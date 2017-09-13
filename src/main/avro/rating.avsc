@@ -5,7 +5,7 @@
   "fields": [
     {
       "name": "movie_id",
-      "type": "int"
+      "type": "long"
     },
     {
       "name": "rating",

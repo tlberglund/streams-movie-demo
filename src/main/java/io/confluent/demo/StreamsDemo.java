@@ -24,11 +24,9 @@ public class StreamsDemo {
       streamsConfiguration.put(StreamsConfig.APPLICATION_ID_CONFIG, "kafka-films");
       streamsConfiguration.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
       streamsConfiguration.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, SCHEMA_REGISTRY_URL);
-      streamsConfiguration.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.Integer().getClass().getName());
-      //streamsConfiguration.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, SpecificAvroSerde.class);
+      streamsConfiguration.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.Long().getClass().getName());
       streamsConfiguration.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
       streamsConfiguration.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-
 
       final Map<String, String> serdeConfig =
          Collections.singletonMap(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG,
@@ -42,20 +40,35 @@ public class StreamsDemo {
 
 
       KStreamBuilder builder = new KStreamBuilder();
-      KStream<Long, String> rawRatings = builder.stream(Serdes.Long(), Serdes.String(), "raw-ratings");
-      KStream<Long, Rating> ratings = rawRatings.mapValues(text -> Parser.parseRating(text));
-      ratings.to("parsed-ratings");
 
-                //.map((Integer key, Rating rating) -> new KeyValue<Integer, Rating>(rating.getMovieId(), rating) );
-/*
-        KTable<Integer, Movie> movies = builder.table("movies");
-        KStream<Integer, Rating> ratings = builder.stream("ratings");
 
-        KStream<Integer, RatedMovie> ratedMovies = ratings.join(movies,
-                (Rating rating, Movie movie) -> new RatedMovie(movie.getTitle().toString(), movie.getReleaseDate(), rating.getRating()));
+      KStream<Long, String> rawRatings = builder.stream("raw-ratings");
 
-        ratedMovies.to("rated-movies");
-*/
+      //rawRatings.print();
+
+      KStream<Long, Rating> ratings = rawRatings
+              .mapValues(text -> Parser.parseRating(text))
+              .map((key, rating) -> new KeyValue<Long, Rating>(rating.getMovieId(), rating));
+
+      //ratings.print();
+
+      KStream<Long, String> rawMovies = builder.stream("raw-movies");
+      KStream<Long, Movie> movieStream = rawMovies
+              .mapValues(text -> Parser.parseMovie(text))
+              .map((key, movie) -> new KeyValue<Long, Movie>(movie.getMovieId(), movie));
+
+      movieStream.to(Serdes.Long(), movieSerde,"movies");
+
+      //movieStream.print();
+
+      KTable<Long, Movie> movies = builder.table(Serdes.Long(), movieSerde, "movies", "movie-store");
+
+      KStream<Long, RatedMovie> ratedMovies = ratings.join(movies,
+              (rating,movie) -> new RatedMovie(movie.getMovieId(), movie.getTitle().toString(), movie.getReleaseDate(), rating.getRating()));
+
+      ratedMovies.print();
+
+
       KafkaStreams streams = new KafkaStreams(builder, streamsConfiguration);
       Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
       streams.start();

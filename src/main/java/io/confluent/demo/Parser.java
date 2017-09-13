@@ -14,55 +14,55 @@ public class Parser {
                 .collect(Collectors.toList());
     }
 
-    //id::title::release_date::?::country::rating::?::genres::actors::director::composer::screenwriter::production_companies
-    static Movie parseMovie(String text) {
-        StringTokenizer st = new StringTokenizer(text, "::");
-        String id = st.nextToken();
-        String title = st.nextToken();
-        String releaseDate = st.nextToken();
-        st.nextToken(); //skip
-        String country = st.nextToken();
-        String rating = st.nextToken();
-        st.nextToken(); // skip
-        String genres = st.nextToken();
-        String actors = st.nextToken();
-        String directors = st.nextToken();
-        String composers = st.nextToken();
-        String screenwriters = st.nextToken();
-        String cinematographer = st.nextToken();
-        String productionCompanies = st.nextToken();
-
-        Movie movie = new Movie();
-        movie.setMovieId(Integer.parseInt(id));
-        movie.setTitle(title);
-        movie.setReleaseDate(Integer.parseInt(releaseDate));
-        movie.setCountry(country);
-        movie.setRating(Float.parseFloat(rating));
-        movie.setGenres(Parser.parseArray(genres));
-        movie.setActors(Parser.parseArray(actors));
-        movie.setDirectors(Parser.parseArray(directors));
-        movie.setComposers(Parser.parseArray(composers));
-        movie.setScreenwriters(Parser.parseArray(screenwriters));
-        movie.setCinematographer(cinematographer);
-        movie.setProductionCompanies(Parser.parseArray(productionCompanies));
-
-        return movie;
-    }
+   static Movie parseMovie(String text) {
+      String[] tokens = text.split("\\:\\:");
+      String id = tokens[0];
+      String title = tokens[1];
+      String releaseDate = tokens[2];
+      String country = tokens[4];
+      String rating = tokens[5];
+      String genres = tokens[7];
+      String actors = tokens[8];
+      String directors = tokens[9];
+      String composers = tokens[10];
+      String screenwriters = tokens[11];
+      String cinematographer = tokens[12];
+      String productionCompanies = "";
+      if(tokens.length > 13) {
+      productionCompanies = tokens[13];
+      }
 
 
-    // userid::movieid::rating
-    static Rating parseRating(String text) {
-        StringTokenizer st = new StringTokenizer(text, "::");
+      Movie movie = new Movie();
+      movie.setMovieId(Long.parseLong(id));
+      movie.setTitle(title);
+      movie.setReleaseDate(Integer.parseInt(releaseDate));
+      movie.setCountry(country);
+      movie.setRating(Float.parseFloat(rating));
+      movie.setGenres(Parser.parseArray(genres));
+      movie.setActors(Parser.parseArray(actors));
+      movie.setDirectors(Parser.parseArray(directors));
+      movie.setComposers(Parser.parseArray(composers));
+      movie.setScreenwriters(Parser.parseArray(screenwriters));
+      movie.setCinematographer(cinematographer);
+      movie.setProductionCompanies(Parser.parseArray(productionCompanies));
 
-        st.nextToken(); // skip user ID, nobody even cares about you
-        String movieId = st.nextToken();
-        String userRating = st.nextToken();
+      return movie;
+   }
 
-        Rating rating = new Rating();
-        rating.setMovieId(Integer.parseInt(movieId));
-        rating.setRating(Float.parseFloat(userRating));
 
-        return rating;
-    }
+   // userid::movieid::rating
+   static Rating parseRating(String text) {
+      String[] tokens = text.split("\\:\\:");
+
+      String movieId = tokens[1];
+      String userRating = tokens[2];
+
+      Rating rating = new Rating();
+      rating.setMovieId(Long.parseLong(movieId));
+      rating.setRating(Float.parseFloat(userRating));
+
+      return rating;
+   }
 
 }

@@ -1,6 +1,7 @@
 package io.confluent.demo;
 
 public class RatedMovie {
+   private long movieId;
    private String title;
    private int releaseYear;
    private float rating;
@@ -22,7 +23,12 @@ public class RatedMovie {
       return rating;
    }
 
-   public RatedMovie(String title, int releaseYear, float rating) {
+   public long getMovieId() {
+      return movieId;
+   }
+
+   public RatedMovie(long movieId, String title, int releaseYear, float rating) {
+      this.movieId = movieId;
       this.title = title;
       this.releaseYear = releaseYear;
       this.rating = rating;
