@@ -67,7 +67,7 @@ public class StreamsDemo {
       KTable<Long, Movie> movies = builder.table(Serdes.Long(), movieSerde, "movies", "movie-store");
 
       KStream<Long, RatedMovie> ratedMovies = ratings.join(movies,
-              (rating, movie) -> new RatedMovie(movie.getMovieId(), movie.getTitle().toString(), movie.getReleaseDate(), rating.getRating()),
+              (movie, rating) -> new RatedMovie(rating.getMovieId(), rating.getTitle().toString(), rating.getReleaseDate(), movie.getRating()),
               Serdes.Long(),
               ratingSerde);
 //      ratedMovies.print();
