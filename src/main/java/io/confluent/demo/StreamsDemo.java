@@ -46,8 +46,6 @@ public class StreamsDemo {
 
       KStream<Long, String> rawRatings = builder.stream(Serdes.Long(), Serdes.String(),"raw-ratings");
 
-      //rawRatings.print();
-
       KStream<Long, Rating> ratings = rawRatings
               .mapValues(text -> Parser.parseRating(text))
               .map((key, rating) -> new KeyValue<Long, Rating>(rating.getMovieId(), rating));
@@ -69,8 +67,6 @@ public class StreamsDemo {
               .map((key, movie) -> new KeyValue<Long, Movie>(movie.getMovieId(), movie));
 
       movieStream.to(Serdes.Long(), movieSerde,"movies");
-
-      //movieStream.print();
 
       KTable<Long, Movie> movies = builder.table(Serdes.Long(), movieSerde, "movies", "movie-store");
 
