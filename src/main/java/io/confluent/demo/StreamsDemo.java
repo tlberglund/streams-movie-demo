@@ -45,38 +45,32 @@ public class StreamsDemo {
       KStreamBuilder builder = new KStreamBuilder();
 
       KStream<Long, String> rawRatings = builder.stream(Serdes.Long(), Serdes.String(),"raw-ratings");
-
-      //rawRatings.print();
-
       KStream<Long, Rating> ratings = rawRatings
-              .mapValues(text -> Parser.parseRating(text))
-              .map((key, rating) -> new KeyValue<Long, Rating>(rating.getMovieId(), rating));
+              .mapValues(Parser::parseRating)
+              .map((key, rating) -> new KeyValue(rating.getMovieId(), rating));
 
       KStream<Long, Float> numericalRatings = ratings.mapValues(rating -> rating.getRating());
       KGroupedStream<Long, Float> ratingsByMovieId = numericalRatings.groupByKey();
       KTable<Long, Long> ratingCount = ratingsByMovieId.count();
       KTable<Long, Float> ratingSum = ratingsByMovieId.reduce((r1, r2) -> r1 + r2);
       KTable<Long, Float> ratingAvg = ratingSum.join(ratingCount,
-              (sum, count) -> sum.floatValue()/count.floatValue());
+              (sum, count) -> sum.floatValue() / count.floatValue());
 
-      ratingSum.to(Serdes.Long(), Serdes.Float(),"rating-sums");
-      ratingCount.to(Serdes.Long(), Serdes.Long(),"rating-counts");
-      ratingAvg.to(Serdes.Long(), Serdes.Float(),"rating-averages");
+      ratingAvg.to(Serdes.Long(), Serdes.Float(), "rating-averages");
 
       KStream<Long, String> rawMovies = builder.stream(Serdes.Long(), Serdes.String(), "raw-movies");
       KStream<Long, Movie> movieStream = rawMovies
-              .mapValues(text -> Parser.parseMovie(text))
-              .map((key, movie) -> new KeyValue<Long, Movie>(movie.getMovieId(), movie));
+              .mapValues(Parser::parseMovie)
+              .map((key, movie) -> new KeyValue(movie.getMovieId(), movie));
 
-      movieStream.to(Serdes.Long(), movieSerde,"movies");
-
-      //movieStream.print();
+      movieStream.to(Serdes.Long(), movieSerde, "movies");
 
       KTable<Long, Movie> movies = builder.table(Serdes.Long(), movieSerde, "movies", "movie-store");
 
       KTable<Long, String> ratedMovies = ratingAvg.join(movies,
               (avg, movie) -> movie.getTitle() + "=" + avg);
 
+      ratedMovies.to(Serdes.Long(), Serdes.String(), "rated-movies");
       ratedMovies.toStream().print();
 
       KafkaStreams streams = new KafkaStreams(builder, streamsConfiguration);

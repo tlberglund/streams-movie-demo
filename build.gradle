@@ -3,6 +3,7 @@ plugins {
 }
 
 apply plugin: 'java'
+apply plugin: 'groovy'
 apply plugin: 'idea'
 
 repositories {
@@ -15,6 +16,11 @@ repositories {
 dependencies {
   compile 'org.apache.kafka:kafka-streams:0.11.0.0'
   compile 'io.confluent:kafka-streams-avro-serde:3.3.0'
+  compile 'javax.json:javax.json-api:1.1.2'
+  compile 'org.codehaus.groovy:groovy-all:2.4.10'
+  runtime 'org.glassfish:javax.json:1.1.2'
+  compile 'org.apache.kafka:kafka-clients:0.11.0.0'
+
 //  compile 'io.confluent:kafka-avro-serializer:3.3.0'
 //  compile 'io.confluent:kafka-schema-registry-client:3.3.0'
 }

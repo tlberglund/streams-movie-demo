@@ -1,10 +1,10 @@
 package io.confluent.demo;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
+import javax.json.*;
 
 public class Parser {
 
@@ -29,7 +29,7 @@ public class Parser {
       String cinematographer = tokens[12];
       String productionCompanies = "";
       if(tokens.length > 13) {
-      productionCompanies = tokens[13];
+         productionCompanies = tokens[13];
       }
 
 
@@ -63,6 +63,42 @@ public class Parser {
       rating.setRating(Float.parseFloat(userRating));
 
       return rating;
+   }
+
+
+   static JsonObject toJson(Rating rating) {
+      JsonBuilderFactory factory = Json.createBuilderFactory(null);
+      return factory.createObjectBuilder()
+         .add("movie_id", rating.getMovieId())
+         .add("rating", rating.getRating())
+         .build();
+   }
+
+
+   static JsonObject toJson(Movie rating) {
+      JsonBuilderFactory factory = Json.createBuilderFactory(null);
+      return factory.createObjectBuilder()
+              .add("movie_id", rating.getMovieId())
+              .add("title", rating.getTitle().toString())
+              .add("release_date", rating.getReleaseDate())
+              .add("country",rating.getCountry().toString())
+              .add("rating", rating.getRating())
+              .add("genres", toJsonArrayOfStrings(rating.getGenres()))
+              .add("actors", toJsonArrayOfStrings(rating.getActors()))
+              .add("directors", toJsonArrayOfStrings(rating.getDirectors()))
+              .add("composers", toJsonArrayOfStrings(rating.getComposers()))
+              .add("screenwriters", toJsonArrayOfStrings(rating.getScreenwriters()))
+              .add("production_companies", toJsonArrayOfStrings(rating.getProductionCompanies()))
+              .add("cinematographer", rating.getCinematographer().toString())
+              .build();
+   }
+
+   static JsonArray toJsonArrayOfStrings(List<CharSequence> elements) {
+       JsonArrayBuilder arrayBuilder = Json.createBuilderFactory(null).createArrayBuilder();
+       for(CharSequence element : elements) {
+          arrayBuilder.add(element.toString());
+       }
+       return arrayBuilder.build();
    }
 
 }
