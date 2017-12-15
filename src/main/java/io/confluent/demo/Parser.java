@@ -80,7 +80,7 @@ public class Parser {
       return factory.createObjectBuilder()
               .add("movie_id", rating.getMovieId())
               .add("title", rating.getTitle().toString())
-              .add("release_date", rating.getReleaseDate())
+              .add("release_year", rating.getReleaseDate())
               .add("country",rating.getCountry().toString())
               .add("rating", rating.getRating())
               .add("genres", toJsonArrayOfStrings(rating.getGenres()))
