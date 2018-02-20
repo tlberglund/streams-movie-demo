@@ -9,7 +9,7 @@ import org.apache.kafka.common.serialization.StringSerializer
 
 
 // Nasty little hack to generate random ratings for fun movies
-class RatingStreamer {
+class AvroRatingStreamer {
 
    static void main(args) {
       def ratingTargets = [
@@ -38,9 +38,9 @@ class RatingStreamer {
 
       Properties props = new Properties()
       props.put('bootstrap.servers', 'localhost:9092')
-      props.put('key.serializer', LongSerializer.class.getName())
-      props.put('value.serializer', StringSerializer.class.getName())
-
+      props.put('key.serializer', 'io.confluent.kafka.serializers.KafkaAvroSerializer')
+      props.put('value.serializer', 'io.confluent.kafka.serializers.KafkaAvroSerializer')
+      props.put('schema.registry.url', 'http://localhost:8081')
       KafkaProducer producer = new KafkaProducer(props)
 
       try {
@@ -64,7 +64,7 @@ class RatingStreamer {
                currentTime = System.currentTimeSeconds()
                println "RATINGS PRODUCED ${recordsProduced}"
             }
-            def pr = new ProducerRecord('ratings', rating.movieId, Parser.toJson(rating).toString())
+            def pr = new ProducerRecord('ratings', rating.movieId, rating)
             producer.send(pr)
             recordsProduced++
          }
