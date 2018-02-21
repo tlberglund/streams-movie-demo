@@ -13,3 +13,5 @@ Running `gradlew idea` will generate IntelliJ IDEA project files. It is from the
 The `data` directory contains two strangely-formatted data files, `movies.dat` and `ratings.dat`. These are parsed by `io.confluent.demo.Parser` into Avro objects called `io.confluent.demo.Movie` and `io.confluent.demo.Rating`. This all happens for free in `StreamsDemo.java`.
 
 That directory also contains JSON versions of the data called `movies-json.js` and `ratings-json.js`. These are handy for demonstrating Streams and KSQL operating on JSON data.
+
+The Gradle tasks `streamJSONRatings` and `streamAvroRatings` will run the `JSONRatingStreamer` and `AvroRatingStreamer` tasks, respectively. (A future refactoring should combine those two.) These classes generate randomized ratings on a subset of films, each with its own target average rating. This is handy for demos.
