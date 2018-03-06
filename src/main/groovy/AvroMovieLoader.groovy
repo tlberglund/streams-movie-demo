@@ -23,7 +23,6 @@ class AvroMovieLoader {
       try {
          long currentTime = System.currentTimeSeconds()
          println currentTime
-         long recordsProduced = 0
          
          println args[0]
          def movieFile = new File(args[0])
