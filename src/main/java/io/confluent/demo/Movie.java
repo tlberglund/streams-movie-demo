@@ -13,8 +13,8 @@ import org.apache.avro.message.SchemaStore;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class Movie extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -806440285709621227L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Movie\",\"namespace\":\"io.confluent.demo\",\"fields\":[{\"name\":\"movie_id\",\"type\":\"long\"},{\"name\":\"title\",\"type\":\"string\"},{\"name\":\"release_date\",\"type\":\"int\"},{\"name\":\"country\",\"type\":\"string\"},{\"name\":\"rating\",\"type\":\"float\"},{\"name\":\"genres\",\"type\":{\"type\":\"array\",\"items\":\"string\"}},{\"name\":\"actors\",\"type\":{\"type\":\"array\",\"items\":\"string\"}},{\"name\":\"directors\",\"type\":{\"type\":\"array\",\"items\":\"string\"}},{\"name\":\"composers\",\"type\":{\"type\":\"array\",\"items\":\"string\"}},{\"name\":\"screenwriters\",\"type\":{\"type\":\"array\",\"items\":\"string\"}},{\"name\":\"cinematographer\",\"type\":\"string\"},{\"name\":\"production_companies\",\"type\":{\"type\":\"array\",\"items\":\"string\"}}]}");
+  private static final long serialVersionUID = -5093465018952603972L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Movie\",\"namespace\":\"io.confluent.demo\",\"fields\":[{\"name\":\"movie_id\",\"type\":\"long\"},{\"name\":\"title\",\"type\":\"string\"},{\"name\":\"release_year\",\"type\":\"int\"},{\"name\":\"country\",\"type\":\"string\"},{\"name\":\"genres\",\"type\":{\"type\":\"array\",\"items\":\"string\"}},{\"name\":\"actors\",\"type\":{\"type\":\"array\",\"items\":\"string\"}},{\"name\":\"directors\",\"type\":{\"type\":\"array\",\"items\":\"string\"}},{\"name\":\"composers\",\"type\":{\"type\":\"array\",\"items\":\"string\"}},{\"name\":\"screenwriters\",\"type\":{\"type\":\"array\",\"items\":\"string\"}},{\"name\":\"cinematographer\",\"type\":\"string\"},{\"name\":\"production_companies\",\"type\":{\"type\":\"array\",\"items\":\"string\"}}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -53,9 +53,8 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
 
   @Deprecated public long movie_id;
   @Deprecated public java.lang.CharSequence title;
-  @Deprecated public int release_date;
+  @Deprecated public int release_year;
   @Deprecated public java.lang.CharSequence country;
-  @Deprecated public float rating;
   @Deprecated public java.util.List<java.lang.CharSequence> genres;
   @Deprecated public java.util.List<java.lang.CharSequence> actors;
   @Deprecated public java.util.List<java.lang.CharSequence> directors;
@@ -75,9 +74,8 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
    * All-args constructor.
    * @param movie_id The new value for movie_id
    * @param title The new value for title
-   * @param release_date The new value for release_date
+   * @param release_year The new value for release_year
    * @param country The new value for country
-   * @param rating The new value for rating
    * @param genres The new value for genres
    * @param actors The new value for actors
    * @param directors The new value for directors
@@ -86,12 +84,11 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
    * @param cinematographer The new value for cinematographer
    * @param production_companies The new value for production_companies
    */
-  public Movie(java.lang.Long movie_id, java.lang.CharSequence title, java.lang.Integer release_date, java.lang.CharSequence country, java.lang.Float rating, java.util.List<java.lang.CharSequence> genres, java.util.List<java.lang.CharSequence> actors, java.util.List<java.lang.CharSequence> directors, java.util.List<java.lang.CharSequence> composers, java.util.List<java.lang.CharSequence> screenwriters, java.lang.CharSequence cinematographer, java.util.List<java.lang.CharSequence> production_companies) {
+  public Movie(java.lang.Long movie_id, java.lang.CharSequence title, java.lang.Integer release_year, java.lang.CharSequence country, java.util.List<java.lang.CharSequence> genres, java.util.List<java.lang.CharSequence> actors, java.util.List<java.lang.CharSequence> directors, java.util.List<java.lang.CharSequence> composers, java.util.List<java.lang.CharSequence> screenwriters, java.lang.CharSequence cinematographer, java.util.List<java.lang.CharSequence> production_companies) {
     this.movie_id = movie_id;
     this.title = title;
-    this.release_date = release_date;
+    this.release_year = release_year;
     this.country = country;
-    this.rating = rating;
     this.genres = genres;
     this.actors = actors;
     this.directors = directors;
@@ -107,16 +104,15 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
     switch (field$) {
     case 0: return movie_id;
     case 1: return title;
-    case 2: return release_date;
+    case 2: return release_year;
     case 3: return country;
-    case 4: return rating;
-    case 5: return genres;
-    case 6: return actors;
-    case 7: return directors;
-    case 8: return composers;
-    case 9: return screenwriters;
-    case 10: return cinematographer;
-    case 11: return production_companies;
+    case 4: return genres;
+    case 5: return actors;
+    case 6: return directors;
+    case 7: return composers;
+    case 8: return screenwriters;
+    case 9: return cinematographer;
+    case 10: return production_companies;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -127,16 +123,15 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
     switch (field$) {
     case 0: movie_id = (java.lang.Long)value$; break;
     case 1: title = (java.lang.CharSequence)value$; break;
-    case 2: release_date = (java.lang.Integer)value$; break;
+    case 2: release_year = (java.lang.Integer)value$; break;
     case 3: country = (java.lang.CharSequence)value$; break;
-    case 4: rating = (java.lang.Float)value$; break;
-    case 5: genres = (java.util.List<java.lang.CharSequence>)value$; break;
-    case 6: actors = (java.util.List<java.lang.CharSequence>)value$; break;
-    case 7: directors = (java.util.List<java.lang.CharSequence>)value$; break;
-    case 8: composers = (java.util.List<java.lang.CharSequence>)value$; break;
-    case 9: screenwriters = (java.util.List<java.lang.CharSequence>)value$; break;
-    case 10: cinematographer = (java.lang.CharSequence)value$; break;
-    case 11: production_companies = (java.util.List<java.lang.CharSequence>)value$; break;
+    case 4: genres = (java.util.List<java.lang.CharSequence>)value$; break;
+    case 5: actors = (java.util.List<java.lang.CharSequence>)value$; break;
+    case 6: directors = (java.util.List<java.lang.CharSequence>)value$; break;
+    case 7: composers = (java.util.List<java.lang.CharSequence>)value$; break;
+    case 8: screenwriters = (java.util.List<java.lang.CharSequence>)value$; break;
+    case 9: cinematographer = (java.lang.CharSequence)value$; break;
+    case 10: production_companies = (java.util.List<java.lang.CharSequence>)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -174,19 +169,19 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
   }
 
   /**
-   * Gets the value of the 'release_date' field.
-   * @return The value of the 'release_date' field.
+   * Gets the value of the 'release_year' field.
+   * @return The value of the 'release_year' field.
    */
-  public java.lang.Integer getReleaseDate() {
-    return release_date;
+  public java.lang.Integer getReleaseYear() {
+    return release_year;
   }
 
   /**
-   * Sets the value of the 'release_date' field.
+   * Sets the value of the 'release_year' field.
    * @param value the value to set.
    */
-  public void setReleaseDate(java.lang.Integer value) {
-    this.release_date = value;
+  public void setReleaseYear(java.lang.Integer value) {
+    this.release_year = value;
   }
 
   /**
@@ -203,22 +198,6 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
    */
   public void setCountry(java.lang.CharSequence value) {
     this.country = value;
-  }
-
-  /**
-   * Gets the value of the 'rating' field.
-   * @return The value of the 'rating' field.
-   */
-  public java.lang.Float getRating() {
-    return rating;
-  }
-
-  /**
-   * Sets the value of the 'rating' field.
-   * @param value the value to set.
-   */
-  public void setRating(java.lang.Float value) {
-    this.rating = value;
   }
 
   /**
@@ -367,9 +346,8 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
 
     private long movie_id;
     private java.lang.CharSequence title;
-    private int release_date;
+    private int release_year;
     private java.lang.CharSequence country;
-    private float rating;
     private java.util.List<java.lang.CharSequence> genres;
     private java.util.List<java.lang.CharSequence> actors;
     private java.util.List<java.lang.CharSequence> directors;
@@ -397,45 +375,41 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
         this.title = data().deepCopy(fields()[1].schema(), other.title);
         fieldSetFlags()[1] = true;
       }
-      if (isValidValue(fields()[2], other.release_date)) {
-        this.release_date = data().deepCopy(fields()[2].schema(), other.release_date);
+      if (isValidValue(fields()[2], other.release_year)) {
+        this.release_year = data().deepCopy(fields()[2].schema(), other.release_year);
         fieldSetFlags()[2] = true;
       }
       if (isValidValue(fields()[3], other.country)) {
         this.country = data().deepCopy(fields()[3].schema(), other.country);
         fieldSetFlags()[3] = true;
       }
-      if (isValidValue(fields()[4], other.rating)) {
-        this.rating = data().deepCopy(fields()[4].schema(), other.rating);
+      if (isValidValue(fields()[4], other.genres)) {
+        this.genres = data().deepCopy(fields()[4].schema(), other.genres);
         fieldSetFlags()[4] = true;
       }
-      if (isValidValue(fields()[5], other.genres)) {
-        this.genres = data().deepCopy(fields()[5].schema(), other.genres);
+      if (isValidValue(fields()[5], other.actors)) {
+        this.actors = data().deepCopy(fields()[5].schema(), other.actors);
         fieldSetFlags()[5] = true;
       }
-      if (isValidValue(fields()[6], other.actors)) {
-        this.actors = data().deepCopy(fields()[6].schema(), other.actors);
+      if (isValidValue(fields()[6], other.directors)) {
+        this.directors = data().deepCopy(fields()[6].schema(), other.directors);
         fieldSetFlags()[6] = true;
       }
-      if (isValidValue(fields()[7], other.directors)) {
-        this.directors = data().deepCopy(fields()[7].schema(), other.directors);
+      if (isValidValue(fields()[7], other.composers)) {
+        this.composers = data().deepCopy(fields()[7].schema(), other.composers);
         fieldSetFlags()[7] = true;
       }
-      if (isValidValue(fields()[8], other.composers)) {
-        this.composers = data().deepCopy(fields()[8].schema(), other.composers);
+      if (isValidValue(fields()[8], other.screenwriters)) {
+        this.screenwriters = data().deepCopy(fields()[8].schema(), other.screenwriters);
         fieldSetFlags()[8] = true;
       }
-      if (isValidValue(fields()[9], other.screenwriters)) {
-        this.screenwriters = data().deepCopy(fields()[9].schema(), other.screenwriters);
+      if (isValidValue(fields()[9], other.cinematographer)) {
+        this.cinematographer = data().deepCopy(fields()[9].schema(), other.cinematographer);
         fieldSetFlags()[9] = true;
       }
-      if (isValidValue(fields()[10], other.cinematographer)) {
-        this.cinematographer = data().deepCopy(fields()[10].schema(), other.cinematographer);
+      if (isValidValue(fields()[10], other.production_companies)) {
+        this.production_companies = data().deepCopy(fields()[10].schema(), other.production_companies);
         fieldSetFlags()[10] = true;
-      }
-      if (isValidValue(fields()[11], other.production_companies)) {
-        this.production_companies = data().deepCopy(fields()[11].schema(), other.production_companies);
-        fieldSetFlags()[11] = true;
       }
     }
 
@@ -453,45 +427,41 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
         this.title = data().deepCopy(fields()[1].schema(), other.title);
         fieldSetFlags()[1] = true;
       }
-      if (isValidValue(fields()[2], other.release_date)) {
-        this.release_date = data().deepCopy(fields()[2].schema(), other.release_date);
+      if (isValidValue(fields()[2], other.release_year)) {
+        this.release_year = data().deepCopy(fields()[2].schema(), other.release_year);
         fieldSetFlags()[2] = true;
       }
       if (isValidValue(fields()[3], other.country)) {
         this.country = data().deepCopy(fields()[3].schema(), other.country);
         fieldSetFlags()[3] = true;
       }
-      if (isValidValue(fields()[4], other.rating)) {
-        this.rating = data().deepCopy(fields()[4].schema(), other.rating);
+      if (isValidValue(fields()[4], other.genres)) {
+        this.genres = data().deepCopy(fields()[4].schema(), other.genres);
         fieldSetFlags()[4] = true;
       }
-      if (isValidValue(fields()[5], other.genres)) {
-        this.genres = data().deepCopy(fields()[5].schema(), other.genres);
+      if (isValidValue(fields()[5], other.actors)) {
+        this.actors = data().deepCopy(fields()[5].schema(), other.actors);
         fieldSetFlags()[5] = true;
       }
-      if (isValidValue(fields()[6], other.actors)) {
-        this.actors = data().deepCopy(fields()[6].schema(), other.actors);
+      if (isValidValue(fields()[6], other.directors)) {
+        this.directors = data().deepCopy(fields()[6].schema(), other.directors);
         fieldSetFlags()[6] = true;
       }
-      if (isValidValue(fields()[7], other.directors)) {
-        this.directors = data().deepCopy(fields()[7].schema(), other.directors);
+      if (isValidValue(fields()[7], other.composers)) {
+        this.composers = data().deepCopy(fields()[7].schema(), other.composers);
         fieldSetFlags()[7] = true;
       }
-      if (isValidValue(fields()[8], other.composers)) {
-        this.composers = data().deepCopy(fields()[8].schema(), other.composers);
+      if (isValidValue(fields()[8], other.screenwriters)) {
+        this.screenwriters = data().deepCopy(fields()[8].schema(), other.screenwriters);
         fieldSetFlags()[8] = true;
       }
-      if (isValidValue(fields()[9], other.screenwriters)) {
-        this.screenwriters = data().deepCopy(fields()[9].schema(), other.screenwriters);
+      if (isValidValue(fields()[9], other.cinematographer)) {
+        this.cinematographer = data().deepCopy(fields()[9].schema(), other.cinematographer);
         fieldSetFlags()[9] = true;
       }
-      if (isValidValue(fields()[10], other.cinematographer)) {
-        this.cinematographer = data().deepCopy(fields()[10].schema(), other.cinematographer);
+      if (isValidValue(fields()[10], other.production_companies)) {
+        this.production_companies = data().deepCopy(fields()[10].schema(), other.production_companies);
         fieldSetFlags()[10] = true;
-      }
-      if (isValidValue(fields()[11], other.production_companies)) {
-        this.production_companies = data().deepCopy(fields()[11].schema(), other.production_companies);
-        fieldSetFlags()[11] = true;
       }
     }
 
@@ -573,39 +543,39 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
     }
 
     /**
-      * Gets the value of the 'release_date' field.
+      * Gets the value of the 'release_year' field.
       * @return The value.
       */
-    public java.lang.Integer getReleaseDate() {
-      return release_date;
+    public java.lang.Integer getReleaseYear() {
+      return release_year;
     }
 
     /**
-      * Sets the value of the 'release_date' field.
-      * @param value The value of 'release_date'.
+      * Sets the value of the 'release_year' field.
+      * @param value The value of 'release_year'.
       * @return This builder.
       */
-    public io.confluent.demo.Movie.Builder setReleaseDate(int value) {
+    public io.confluent.demo.Movie.Builder setReleaseYear(int value) {
       validate(fields()[2], value);
-      this.release_date = value;
+      this.release_year = value;
       fieldSetFlags()[2] = true;
       return this;
     }
 
     /**
-      * Checks whether the 'release_date' field has been set.
-      * @return True if the 'release_date' field has been set, false otherwise.
+      * Checks whether the 'release_year' field has been set.
+      * @return True if the 'release_year' field has been set, false otherwise.
       */
-    public boolean hasReleaseDate() {
+    public boolean hasReleaseYear() {
       return fieldSetFlags()[2];
     }
 
 
     /**
-      * Clears the value of the 'release_date' field.
+      * Clears the value of the 'release_year' field.
       * @return This builder.
       */
-    public io.confluent.demo.Movie.Builder clearReleaseDate() {
+    public io.confluent.demo.Movie.Builder clearReleaseYear() {
       fieldSetFlags()[2] = false;
       return this;
     }
@@ -650,44 +620,6 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
     }
 
     /**
-      * Gets the value of the 'rating' field.
-      * @return The value.
-      */
-    public java.lang.Float getRating() {
-      return rating;
-    }
-
-    /**
-      * Sets the value of the 'rating' field.
-      * @param value The value of 'rating'.
-      * @return This builder.
-      */
-    public io.confluent.demo.Movie.Builder setRating(float value) {
-      validate(fields()[4], value);
-      this.rating = value;
-      fieldSetFlags()[4] = true;
-      return this;
-    }
-
-    /**
-      * Checks whether the 'rating' field has been set.
-      * @return True if the 'rating' field has been set, false otherwise.
-      */
-    public boolean hasRating() {
-      return fieldSetFlags()[4];
-    }
-
-
-    /**
-      * Clears the value of the 'rating' field.
-      * @return This builder.
-      */
-    public io.confluent.demo.Movie.Builder clearRating() {
-      fieldSetFlags()[4] = false;
-      return this;
-    }
-
-    /**
       * Gets the value of the 'genres' field.
       * @return The value.
       */
@@ -701,9 +633,9 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       * @return This builder.
       */
     public io.confluent.demo.Movie.Builder setGenres(java.util.List<java.lang.CharSequence> value) {
-      validate(fields()[5], value);
+      validate(fields()[4], value);
       this.genres = value;
-      fieldSetFlags()[5] = true;
+      fieldSetFlags()[4] = true;
       return this;
     }
 
@@ -712,7 +644,7 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       * @return True if the 'genres' field has been set, false otherwise.
       */
     public boolean hasGenres() {
-      return fieldSetFlags()[5];
+      return fieldSetFlags()[4];
     }
 
 
@@ -722,7 +654,7 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       */
     public io.confluent.demo.Movie.Builder clearGenres() {
       genres = null;
-      fieldSetFlags()[5] = false;
+      fieldSetFlags()[4] = false;
       return this;
     }
 
@@ -740,9 +672,9 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       * @return This builder.
       */
     public io.confluent.demo.Movie.Builder setActors(java.util.List<java.lang.CharSequence> value) {
-      validate(fields()[6], value);
+      validate(fields()[5], value);
       this.actors = value;
-      fieldSetFlags()[6] = true;
+      fieldSetFlags()[5] = true;
       return this;
     }
 
@@ -751,7 +683,7 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       * @return True if the 'actors' field has been set, false otherwise.
       */
     public boolean hasActors() {
-      return fieldSetFlags()[6];
+      return fieldSetFlags()[5];
     }
 
 
@@ -761,7 +693,7 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       */
     public io.confluent.demo.Movie.Builder clearActors() {
       actors = null;
-      fieldSetFlags()[6] = false;
+      fieldSetFlags()[5] = false;
       return this;
     }
 
@@ -779,9 +711,9 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       * @return This builder.
       */
     public io.confluent.demo.Movie.Builder setDirectors(java.util.List<java.lang.CharSequence> value) {
-      validate(fields()[7], value);
+      validate(fields()[6], value);
       this.directors = value;
-      fieldSetFlags()[7] = true;
+      fieldSetFlags()[6] = true;
       return this;
     }
 
@@ -790,7 +722,7 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       * @return True if the 'directors' field has been set, false otherwise.
       */
     public boolean hasDirectors() {
-      return fieldSetFlags()[7];
+      return fieldSetFlags()[6];
     }
 
 
@@ -800,7 +732,7 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       */
     public io.confluent.demo.Movie.Builder clearDirectors() {
       directors = null;
-      fieldSetFlags()[7] = false;
+      fieldSetFlags()[6] = false;
       return this;
     }
 
@@ -818,9 +750,9 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       * @return This builder.
       */
     public io.confluent.demo.Movie.Builder setComposers(java.util.List<java.lang.CharSequence> value) {
-      validate(fields()[8], value);
+      validate(fields()[7], value);
       this.composers = value;
-      fieldSetFlags()[8] = true;
+      fieldSetFlags()[7] = true;
       return this;
     }
 
@@ -829,7 +761,7 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       * @return True if the 'composers' field has been set, false otherwise.
       */
     public boolean hasComposers() {
-      return fieldSetFlags()[8];
+      return fieldSetFlags()[7];
     }
 
 
@@ -839,7 +771,7 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       */
     public io.confluent.demo.Movie.Builder clearComposers() {
       composers = null;
-      fieldSetFlags()[8] = false;
+      fieldSetFlags()[7] = false;
       return this;
     }
 
@@ -857,9 +789,9 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       * @return This builder.
       */
     public io.confluent.demo.Movie.Builder setScreenwriters(java.util.List<java.lang.CharSequence> value) {
-      validate(fields()[9], value);
+      validate(fields()[8], value);
       this.screenwriters = value;
-      fieldSetFlags()[9] = true;
+      fieldSetFlags()[8] = true;
       return this;
     }
 
@@ -868,7 +800,7 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       * @return True if the 'screenwriters' field has been set, false otherwise.
       */
     public boolean hasScreenwriters() {
-      return fieldSetFlags()[9];
+      return fieldSetFlags()[8];
     }
 
 
@@ -878,7 +810,7 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       */
     public io.confluent.demo.Movie.Builder clearScreenwriters() {
       screenwriters = null;
-      fieldSetFlags()[9] = false;
+      fieldSetFlags()[8] = false;
       return this;
     }
 
@@ -896,9 +828,9 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       * @return This builder.
       */
     public io.confluent.demo.Movie.Builder setCinematographer(java.lang.CharSequence value) {
-      validate(fields()[10], value);
+      validate(fields()[9], value);
       this.cinematographer = value;
-      fieldSetFlags()[10] = true;
+      fieldSetFlags()[9] = true;
       return this;
     }
 
@@ -907,7 +839,7 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       * @return True if the 'cinematographer' field has been set, false otherwise.
       */
     public boolean hasCinematographer() {
-      return fieldSetFlags()[10];
+      return fieldSetFlags()[9];
     }
 
 
@@ -917,7 +849,7 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       */
     public io.confluent.demo.Movie.Builder clearCinematographer() {
       cinematographer = null;
-      fieldSetFlags()[10] = false;
+      fieldSetFlags()[9] = false;
       return this;
     }
 
@@ -935,9 +867,9 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       * @return This builder.
       */
     public io.confluent.demo.Movie.Builder setProductionCompanies(java.util.List<java.lang.CharSequence> value) {
-      validate(fields()[11], value);
+      validate(fields()[10], value);
       this.production_companies = value;
-      fieldSetFlags()[11] = true;
+      fieldSetFlags()[10] = true;
       return this;
     }
 
@@ -946,7 +878,7 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       * @return True if the 'production_companies' field has been set, false otherwise.
       */
     public boolean hasProductionCompanies() {
-      return fieldSetFlags()[11];
+      return fieldSetFlags()[10];
     }
 
 
@@ -956,7 +888,7 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
       */
     public io.confluent.demo.Movie.Builder clearProductionCompanies() {
       production_companies = null;
-      fieldSetFlags()[11] = false;
+      fieldSetFlags()[10] = false;
       return this;
     }
 
@@ -967,16 +899,15 @@ public class Movie extends org.apache.avro.specific.SpecificRecordBase implement
         Movie record = new Movie();
         record.movie_id = fieldSetFlags()[0] ? this.movie_id : (java.lang.Long) defaultValue(fields()[0]);
         record.title = fieldSetFlags()[1] ? this.title : (java.lang.CharSequence) defaultValue(fields()[1]);
-        record.release_date = fieldSetFlags()[2] ? this.release_date : (java.lang.Integer) defaultValue(fields()[2]);
+        record.release_year = fieldSetFlags()[2] ? this.release_year : (java.lang.Integer) defaultValue(fields()[2]);
         record.country = fieldSetFlags()[3] ? this.country : (java.lang.CharSequence) defaultValue(fields()[3]);
-        record.rating = fieldSetFlags()[4] ? this.rating : (java.lang.Float) defaultValue(fields()[4]);
-        record.genres = fieldSetFlags()[5] ? this.genres : (java.util.List<java.lang.CharSequence>) defaultValue(fields()[5]);
-        record.actors = fieldSetFlags()[6] ? this.actors : (java.util.List<java.lang.CharSequence>) defaultValue(fields()[6]);
-        record.directors = fieldSetFlags()[7] ? this.directors : (java.util.List<java.lang.CharSequence>) defaultValue(fields()[7]);
-        record.composers = fieldSetFlags()[8] ? this.composers : (java.util.List<java.lang.CharSequence>) defaultValue(fields()[8]);
-        record.screenwriters = fieldSetFlags()[9] ? this.screenwriters : (java.util.List<java.lang.CharSequence>) defaultValue(fields()[9]);
-        record.cinematographer = fieldSetFlags()[10] ? this.cinematographer : (java.lang.CharSequence) defaultValue(fields()[10]);
-        record.production_companies = fieldSetFlags()[11] ? this.production_companies : (java.util.List<java.lang.CharSequence>) defaultValue(fields()[11]);
+        record.genres = fieldSetFlags()[4] ? this.genres : (java.util.List<java.lang.CharSequence>) defaultValue(fields()[4]);
+        record.actors = fieldSetFlags()[5] ? this.actors : (java.util.List<java.lang.CharSequence>) defaultValue(fields()[5]);
+        record.directors = fieldSetFlags()[6] ? this.directors : (java.util.List<java.lang.CharSequence>) defaultValue(fields()[6]);
+        record.composers = fieldSetFlags()[7] ? this.composers : (java.util.List<java.lang.CharSequence>) defaultValue(fields()[7]);
+        record.screenwriters = fieldSetFlags()[8] ? this.screenwriters : (java.util.List<java.lang.CharSequence>) defaultValue(fields()[8]);
+        record.cinematographer = fieldSetFlags()[9] ? this.cinematographer : (java.lang.CharSequence) defaultValue(fields()[9]);
+        record.production_companies = fieldSetFlags()[10] ? this.production_companies : (java.util.List<java.lang.CharSequence>) defaultValue(fields()[10]);
         return record;
       } catch (java.lang.Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

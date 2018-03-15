@@ -13,8 +13,8 @@ import org.apache.avro.message.SchemaStore;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class Rating extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = -5833296762810771925L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Rating\",\"namespace\":\"io.confluent.demo\",\"fields\":[{\"name\":\"movie_id\",\"type\":\"long\"},{\"name\":\"rating\",\"type\":\"float\"}]}");
+  private static final long serialVersionUID = 7100497284749734046L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Rating\",\"namespace\":\"io.confluent.demo\",\"fields\":[{\"name\":\"movie_id\",\"type\":\"long\"},{\"name\":\"rating\",\"type\":\"double\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -52,7 +52,7 @@ public class Rating extends org.apache.avro.specific.SpecificRecordBase implemen
   }
 
   @Deprecated public long movie_id;
-  @Deprecated public float rating;
+  @Deprecated public double rating;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -66,7 +66,7 @@ public class Rating extends org.apache.avro.specific.SpecificRecordBase implemen
    * @param movie_id The new value for movie_id
    * @param rating The new value for rating
    */
-  public Rating(java.lang.Long movie_id, java.lang.Float rating) {
+  public Rating(java.lang.Long movie_id, java.lang.Double rating) {
     this.movie_id = movie_id;
     this.rating = rating;
   }
@@ -86,7 +86,7 @@ public class Rating extends org.apache.avro.specific.SpecificRecordBase implemen
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
     case 0: movie_id = (java.lang.Long)value$; break;
-    case 1: rating = (java.lang.Float)value$; break;
+    case 1: rating = (java.lang.Double)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -111,7 +111,7 @@ public class Rating extends org.apache.avro.specific.SpecificRecordBase implemen
    * Gets the value of the 'rating' field.
    * @return The value of the 'rating' field.
    */
-  public java.lang.Float getRating() {
+  public java.lang.Double getRating() {
     return rating;
   }
 
@@ -119,7 +119,7 @@ public class Rating extends org.apache.avro.specific.SpecificRecordBase implemen
    * Sets the value of the 'rating' field.
    * @param value the value to set.
    */
-  public void setRating(java.lang.Float value) {
+  public void setRating(java.lang.Double value) {
     this.rating = value;
   }
 
@@ -156,7 +156,7 @@ public class Rating extends org.apache.avro.specific.SpecificRecordBase implemen
     implements org.apache.avro.data.RecordBuilder<Rating> {
 
     private long movie_id;
-    private float rating;
+    private double rating;
 
     /** Creates a new Builder */
     private Builder() {
@@ -237,7 +237,7 @@ public class Rating extends org.apache.avro.specific.SpecificRecordBase implemen
       * Gets the value of the 'rating' field.
       * @return The value.
       */
-    public java.lang.Float getRating() {
+    public java.lang.Double getRating() {
       return rating;
     }
 
@@ -246,7 +246,7 @@ public class Rating extends org.apache.avro.specific.SpecificRecordBase implemen
       * @param value The value of 'rating'.
       * @return This builder.
       */
-    public io.confluent.demo.Rating.Builder setRating(float value) {
+    public io.confluent.demo.Rating.Builder setRating(double value) {
       validate(fields()[1], value);
       this.rating = value;
       fieldSetFlags()[1] = true;
@@ -277,7 +277,7 @@ public class Rating extends org.apache.avro.specific.SpecificRecordBase implemen
       try {
         Rating record = new Rating();
         record.movie_id = fieldSetFlags()[0] ? this.movie_id : (java.lang.Long) defaultValue(fields()[0]);
-        record.rating = fieldSetFlags()[1] ? this.rating : (java.lang.Float) defaultValue(fields()[1]);
+        record.rating = fieldSetFlags()[1] ? this.rating : (java.lang.Double) defaultValue(fields()[1]);
         return record;
       } catch (java.lang.Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

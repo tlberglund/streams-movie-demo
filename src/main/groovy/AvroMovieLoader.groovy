@@ -28,7 +28,7 @@ class AvroMovieLoader {
          def movieFile = new File(args[0])
          movieFile.eachLine { line ->
            Movie movie = Parser.parseMovie(line)
-           def pr = new ProducerRecord('movies', movie.movieId, movie)
+           def pr = new ProducerRecord('movies-raw', movie.movieId, movie)
            producer.send(pr)
          }
       }

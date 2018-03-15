@@ -12,16 +12,12 @@
       "type": "string"
     },
     {
-      "name": "release_date",
+      "name": "release_year",
       "type": "int"
     },
     {
       "name": "country",
       "type": "string"
-    },
-    {
-      "name": "rating",
-      "type": "float"
     },
     {
       "name": "genres",

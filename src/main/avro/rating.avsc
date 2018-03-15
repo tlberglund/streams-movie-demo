@@ -9,7 +9,7 @@
     },
     {
       "name": "rating",
-      "type": "float"
+      "type": "double"
     }
   ]
 }

@@ -26,7 +26,7 @@ public class StreamsDemo {
       streamsConfiguration.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
       streamsConfiguration.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, SCHEMA_REGISTRY_URL);
       streamsConfiguration.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.Long().getClass().getName());
-      streamsConfiguration.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.Float().getClass().getName());
+      streamsConfiguration.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.Double().getClass().getName());
       streamsConfiguration.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
       final Map<String, String> serdeConfig =
@@ -46,32 +46,19 @@ public class StreamsDemo {
       KStreamBuilder builder = new KStreamBuilder();
 
       KStream<Long, String> rawRatings = builder.stream(Serdes.Long(), Serdes.String(), "raw-ratings");
-      KStream<Long, Rating> ratings = rawRatings
-              .mapValues(Parser::parseRating)
+      KStream<Long, Rating> ratings = rawRatings.mapValues(Parser::parseRating)
               .map((key, rating) -> new KeyValue<Long, Rating>(rating.getMovieId(), rating));
-      KStream<Long, Float> numericalRatings = ratings.mapValues(rating -> rating.getRating());
-      KGroupedStream<Long, Float> ratingsByMovieId = numericalRatings.groupByKey();
 
-      KTable<Long, Long> ratingCount = ratingsByMovieId.count();
-      KTable<Long, Float> ratingSum = ratingsByMovieId.reduce((v1, v2) -> v1 + v2);
-      KTable<Long, Float> ratingAverage = ratingSum.join(ratingCount,
-              (sum, count) -> sum.floatValue() / count.floatValue());
+      KStream<Long, Double> numericRatings = ratings.mapValues(rating -> rating.getRating());
 
-      ratingAverage.to(Serdes.Long(), Serdes.Float(), "rating-averages");
+      KGroupedStream<Long, Double> ratingsById = numericRatings.groupByKey();
 
-      KStream<Long, String> rawMovies = builder.stream(Serdes.Long(), Serdes.String(), "raw-movies");
-      KStream<Long, Movie> movieStream = rawMovies
-              .mapValues(Parser::parseMovie)
-              .map((key, movie) -> new KeyValue<Long, Movie>(movie.getMovieId(), movie));
+      KTable<Long, Long> ratingCounts = ratingsById.count();
+      KTable<Long, Double> ratingSums = ratingsById.reduce((v1, v2) -> v1 + v2);
+      KTable<Long, Double> ratingAverage =
+              ratingSums.join(ratingCounts, (sum, count) -> sum / count.doubleValue());
 
-      movieStream.to(Serdes.Long(), movieSerde, "movies");
-
-      KTable<Long, Movie> movies = builder.table(Serdes.Long(), movieSerde, "movies", "movie-store");
-
-      KTable<Long, String> ratedMovies = ratingAverage.join(movies,
-              (avg, movie) -> movie.getTitle() + "=" + avg);
-
-      ratedMovies.to(Serdes.Long(), Serdes.String(), "rated-movies");
+      ratingAverage.to("average-ratings");
 
       KafkaStreams streams = new KafkaStreams(builder, streamsConfiguration);
       Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
@@ -79,3 +66,8 @@ public class StreamsDemo {
    }
 
 }
+
+
+
+
+

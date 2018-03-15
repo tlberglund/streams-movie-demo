@@ -13,8 +13,8 @@ import org.apache.avro.message.SchemaStore;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class RatedMovie extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  private static final long serialVersionUID = 3312086264731532319L;
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"RatedMovie\",\"namespace\":\"io.confluent.demo\",\"fields\":[{\"name\":\"movie_id\",\"type\":\"long\"},{\"name\":\"title\",\"type\":\"string\"},{\"name\":\"release_year\",\"type\":\"int\"},{\"name\":\"rating\",\"type\":\"float\"}]}");
+  private static final long serialVersionUID = 628637240556247995L;
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"RatedMovie\",\"namespace\":\"io.confluent.demo\",\"fields\":[{\"name\":\"movie_id\",\"type\":\"long\"},{\"name\":\"title\",\"type\":\"string\"},{\"name\":\"release_year\",\"type\":\"int\"},{\"name\":\"rating\",\"type\":\"double\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
 
   private static SpecificData MODEL$ = new SpecificData();
@@ -54,7 +54,7 @@ public class RatedMovie extends org.apache.avro.specific.SpecificRecordBase impl
   @Deprecated public long movie_id;
   @Deprecated public java.lang.CharSequence title;
   @Deprecated public int release_year;
-  @Deprecated public float rating;
+  @Deprecated public double rating;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -70,7 +70,7 @@ public class RatedMovie extends org.apache.avro.specific.SpecificRecordBase impl
    * @param release_year The new value for release_year
    * @param rating The new value for rating
    */
-  public RatedMovie(java.lang.Long movie_id, java.lang.CharSequence title, java.lang.Integer release_year, java.lang.Float rating) {
+  public RatedMovie(java.lang.Long movie_id, java.lang.CharSequence title, java.lang.Integer release_year, java.lang.Double rating) {
     this.movie_id = movie_id;
     this.title = title;
     this.release_year = release_year;
@@ -96,7 +96,7 @@ public class RatedMovie extends org.apache.avro.specific.SpecificRecordBase impl
     case 0: movie_id = (java.lang.Long)value$; break;
     case 1: title = (java.lang.CharSequence)value$; break;
     case 2: release_year = (java.lang.Integer)value$; break;
-    case 3: rating = (java.lang.Float)value$; break;
+    case 3: rating = (java.lang.Double)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -153,7 +153,7 @@ public class RatedMovie extends org.apache.avro.specific.SpecificRecordBase impl
    * Gets the value of the 'rating' field.
    * @return The value of the 'rating' field.
    */
-  public java.lang.Float getRating() {
+  public java.lang.Double getRating() {
     return rating;
   }
 
@@ -161,7 +161,7 @@ public class RatedMovie extends org.apache.avro.specific.SpecificRecordBase impl
    * Sets the value of the 'rating' field.
    * @param value the value to set.
    */
-  public void setRating(java.lang.Float value) {
+  public void setRating(java.lang.Double value) {
     this.rating = value;
   }
 
@@ -200,7 +200,7 @@ public class RatedMovie extends org.apache.avro.specific.SpecificRecordBase impl
     private long movie_id;
     private java.lang.CharSequence title;
     private int release_year;
-    private float rating;
+    private double rating;
 
     /** Creates a new Builder */
     private Builder() {
@@ -374,7 +374,7 @@ public class RatedMovie extends org.apache.avro.specific.SpecificRecordBase impl
       * Gets the value of the 'rating' field.
       * @return The value.
       */
-    public java.lang.Float getRating() {
+    public java.lang.Double getRating() {
       return rating;
     }
 
@@ -383,7 +383,7 @@ public class RatedMovie extends org.apache.avro.specific.SpecificRecordBase impl
       * @param value The value of 'rating'.
       * @return This builder.
       */
-    public io.confluent.demo.RatedMovie.Builder setRating(float value) {
+    public io.confluent.demo.RatedMovie.Builder setRating(double value) {
       validate(fields()[3], value);
       this.rating = value;
       fieldSetFlags()[3] = true;
@@ -416,7 +416,7 @@ public class RatedMovie extends org.apache.avro.specific.SpecificRecordBase impl
         record.movie_id = fieldSetFlags()[0] ? this.movie_id : (java.lang.Long) defaultValue(fields()[0]);
         record.title = fieldSetFlags()[1] ? this.title : (java.lang.CharSequence) defaultValue(fields()[1]);
         record.release_year = fieldSetFlags()[2] ? this.release_year : (java.lang.Integer) defaultValue(fields()[2]);
-        record.rating = fieldSetFlags()[3] ? this.rating : (java.lang.Float) defaultValue(fields()[3]);
+        record.rating = fieldSetFlags()[3] ? this.rating : (java.lang.Double) defaultValue(fields()[3]);
         return record;
       } catch (java.lang.Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);
