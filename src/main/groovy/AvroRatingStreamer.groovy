@@ -37,8 +37,8 @@ class AvroRatingStreamer {
       def stddev = 2
 
       Properties props = new Properties()
-      props.put('bootstrap.servers', 'localhost:9092')
-      props.put('key.serializer', 'io.confluent.kafka.serializers.KafkaAvroSerializer')
+      props.put('bootstrap.servers', args[0])
+      props.put('key.serializer', 'org.apache.kafka.common.serialization.LongSerializer')
       props.put('value.serializer', 'io.confluent.kafka.serializers.KafkaAvroSerializer')
       props.put('schema.registry.url', 'http://localhost:8081')
       KafkaProducer producer = new KafkaProducer(props)

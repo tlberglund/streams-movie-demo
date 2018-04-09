@@ -37,7 +37,8 @@ class JSONRatingStreamer {
       def stddev = 2
 
       Properties props = new Properties()
-      props.put('bootstrap.servers', 'localhost:9092')
+      println "Streaming ratings to ${args[0]}"
+      props.put('bootstrap.servers', args[0])
       props.put('key.serializer', LongSerializer.class.getName())
       props.put('value.serializer', StringSerializer.class.getName())
 
