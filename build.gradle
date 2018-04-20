@@ -1,6 +1,12 @@
-plugins {
-  id "com.commercehub.gradle.plugin.avro-base" version "0.9.1"
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "com.commercehub.gradle.plugin:gradle-avro-plugin:0.10.0"
+    }
 }
+apply plugin: "com.commercehub.gradle.plugin.avro"
 
 apply plugin: 'java'
 apply plugin: 'groovy'
@@ -45,4 +51,8 @@ task loadAvroMovies(type: JavaExec) {
   classpath = sourceSets.main.runtimeClasspath
   args "${projectDir}/data/movies.dat"
   args = [env['KAFKA_BOOTSTRAP_SERVERS'] ?: 'localhost:9092']
+}
+
+avro {
+    stringType = "CharSequence"
 }
