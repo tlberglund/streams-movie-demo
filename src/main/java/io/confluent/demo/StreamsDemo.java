@@ -1,19 +1,26 @@
 package io.confluent.demo;
 
-import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
-import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.utils.Bytes;
+import org.apache.kafka.streams.Consumed;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
+import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.kstream.*;
+import org.apache.kafka.streams.kstream.KGroupedStream;
+import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.KTable;
+import org.apache.kafka.streams.kstream.Materialized;
+import org.apache.kafka.streams.kstream.Produced;
+import org.apache.kafka.streams.state.KeyValueStore;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
+
+import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
+import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 
 public class StreamsDemo {
 
@@ -28,6 +35,7 @@ public class StreamsDemo {
       streamsConfiguration.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.Long().getClass().getName());
       streamsConfiguration.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.Double().getClass().getName());
       streamsConfiguration.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+      streamsConfiguration.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
 
       final Map<String, String> serdeConfig =
          Collections.singletonMap(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG,
@@ -43,13 +51,15 @@ public class StreamsDemo {
       ratingSerde.configure(serdeConfig, false);
 
 
-      KStreamBuilder builder = new KStreamBuilder();
+      StreamsBuilder builder = new StreamsBuilder();
 
-      KStream<Long, String> rawRatings = builder.stream(Serdes.Long(), Serdes.String(), "raw-ratings");
+      KStream<Long, String> rawRatings = builder.stream("raw-ratings",
+                                                        Consumed.with(Serdes.Long(),
+                                                                      Serdes.String()));
       KStream<Long, Rating> ratings = rawRatings.mapValues(Parser::parseRating)
-              .map((key, rating) -> new KeyValue<Long, Rating>(rating.getMovieId(), rating));
+              .map((key, rating) -> new KeyValue<>(rating.getMovieId(), rating));
 
-      KStream<Long, Double> numericRatings = ratings.mapValues(rating -> rating.getRating());
+      KStream<Long, Double> numericRatings = ratings.mapValues(Rating::getRating);
 
       KGroupedStream<Long, Double> ratingsById = numericRatings.groupByKey();
 
@@ -58,9 +68,29 @@ public class StreamsDemo {
       KTable<Long, Double> ratingAverage =
               ratingSums.join(ratingCounts, (sum, count) -> sum / count.doubleValue());
 
-      ratingAverage.to("average-ratings");
+      ratingAverage.toStream().to("average-ratings");
 
-      KafkaStreams streams = new KafkaStreams(builder, streamsConfiguration);
+      KStream<Long, String> rawMovies = builder.stream("raw-movies", Consumed.with(Serdes.Long(), Serdes.String()));
+      KStream<Long, Movie> movieStream = rawMovies
+          .mapValues(Parser::parseMovie)
+          .map((key, movie) -> new KeyValue<>(movie.getMovieId(), movie));
+
+      movieStream.to( "movies", Produced.with(Serdes.Long(), movieSerde));
+
+      KTable<Long, Movie> movies = builder.table("movies",
+                                                 Materialized
+                                                     .<Long, Movie, KeyValueStore<Bytes, byte[]>>as(
+                                                         "movies-store")
+                                                     .withValueSerde(movieSerde)
+                                                     .withKeySerde(Serdes.Long())
+      );
+
+      KTable<Long, String> ratedMovies = ratingAverage.join(movies,
+                                                            (avg, movie) -> movie.getTitle() + "=" + avg);
+
+      ratedMovies.toStream().to("rated-movies", Produced.with(Serdes.Long(), Serdes.String()));
+
+      KafkaStreams streams = new KafkaStreams(builder.build(), streamsConfiguration);
       Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
       streams.start();
    }
