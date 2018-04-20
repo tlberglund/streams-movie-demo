@@ -1,5 +1,5 @@
 import io.confluent.demo.Parser
-import io.confluent.demo.Rating
+import io.confluent.demo.avro.Rating
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.common.serialization.DoubleSerializer
 import org.apache.kafka.common.serialization.IntegerSerializer

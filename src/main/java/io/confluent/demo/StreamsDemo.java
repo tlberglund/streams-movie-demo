@@ -1,5 +1,8 @@
 package io.confluent.demo;
 
+import io.confluent.demo.avro.Movie;
+import io.confluent.demo.avro.RatedMovie;
+import io.confluent.demo.avro.Rating;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
