@@ -1,5 +1,8 @@
 package io.confluent.demo;
 
+import io.confluent.demo.avro.Movie;
+import io.confluent.demo.avro.Rating;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;

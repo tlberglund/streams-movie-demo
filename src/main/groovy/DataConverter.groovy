@@ -1,5 +1,7 @@
 package io.confluent.demo;
 
+import io.confluent.demo.avro.Rating;
+
 import java.io.File;
 
 File ratings = new File('../../../data/ratings.dat')
