@@ -1,12 +1,7 @@
-import io.confluent.demo.Parser
 import io.confluent.demo.Movie
+import io.confluent.demo.Parser
 import org.apache.kafka.clients.producer.KafkaProducer
-import org.apache.kafka.common.serialization.DoubleSerializer
-import org.apache.kafka.common.serialization.IntegerSerializer
-import org.apache.kafka.common.serialization.LongSerializer
 import org.apache.kafka.clients.producer.ProducerRecord
-import org.apache.kafka.common.serialization.StringSerializer
-
 
 // Nasty little hack to generate random ratings for fun movies
 class AvroMovieLoader {
