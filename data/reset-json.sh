@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 confluent destroy
 confluent start schema-registry
 
