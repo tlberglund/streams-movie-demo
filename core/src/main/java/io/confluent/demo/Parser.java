@@ -101,4 +101,9 @@ public class Parser {
        return arrayBuilder.build();
    }
 
+   public static String toRawRating(Rating rating){
+      // userid::movieid::rating
+       return "42::"+rating.getMovieId()+"::"+rating.getRating();
+   }
+
 }

@@ -1,0 +1,6 @@
+spring:
+  kafka:
+    consumer:
+      auto-commit-interval: 2
+      enable-auto-commit: true
+      auto-offset-reset: latest
