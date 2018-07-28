@@ -1,1 +1,1 @@
-include 'core', 'streams', 'loader'
+include 'core', 'streams', 'loader', 'spring-streams'
