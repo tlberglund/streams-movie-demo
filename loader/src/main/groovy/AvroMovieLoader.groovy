@@ -9,7 +9,7 @@ class AvroMovieLoader {
    static void main(args) {
 
       Properties props = new Properties()
-      props.put('bootstrap.servers', args[0])
+      props.put('bootstrap.servers', args[1])
       props.put('key.serializer', 'org.apache.kafka.common.serialization.LongSerializer')
       props.put('value.serializer', 'io.confluent.kafka.serializers.KafkaAvroSerializer')
       props.put('schema.registry.url', 'http://localhost:8081')
@@ -18,12 +18,12 @@ class AvroMovieLoader {
       try {
          long currentTime = System.currentTimeSeconds()
          println currentTime
-         
-         println args[0]
+
+         println args[1]
          def movieFile = new File(args[0])
          movieFile.eachLine { line ->
            Movie movie = Parser.parseMovie(line)
-           def pr = new ProducerRecord('movies-raw', movie.movieId, movie)
+           def pr = new ProducerRecord('raw-movies', movie.movieId, movie)
            producer.send(pr)
          }
       }
