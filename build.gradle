@@ -1,9 +1,10 @@
 buildscript {
   ext {
-    springBootVersion = '2.0.2.RELEASE'
+    springBootVersion = '2.1.0.M3'
   }
   repositories {
     jcenter()
+    maven { url "https://repo.spring.io/milestone" }
   }
   dependencies {
     classpath "com.commercehub.gradle.plugin:gradle-avro-plugin:0.14.2"
@@ -36,7 +37,7 @@ project(':core') {
 
   dependencies {
     compile 'org.apache.avro:avro:1.8.2'
-    compile 'org.apache.kafka:kafka-clients:1.1.0'
+    compile 'org.apache.kafka:kafka-clients:2.0.0'
     compile 'javax.json:javax.json-api:1.1.2'
     runtime 'org.glassfish:javax.json:1.1.2'
     compile 'io.confluent:kafka-streams-avro-serde:4.1.0'
@@ -95,7 +96,7 @@ project(':streams') {
   dependencies {
     compile project(':core')
 
-    compile 'org.apache.kafka:kafka-streams:1.1.0'
+    compile 'org.apache.kafka:kafka-streams:2.0.0'
 
 //  compile 'io.confluent:kafka-avro-serializer:3.3.0'
 //  compile 'io.confluent:kafka-schema-registry-client:3.3.0'
@@ -113,6 +114,7 @@ project(':spring-streams') {
     compile "org.springframework.boot:spring-boot-starter-web"
     compile 'org.springframework.kafka:spring-kafka'
   }
+  // Greenwich.M1 due Sept 21; use boot for dep management instead
   ext {
     springCloudVersion = 'Finchley.RC2'
   }
@@ -123,7 +125,8 @@ project(':spring-streams') {
 
   dependencyManagement {
     imports {
-      mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+//      mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+      mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
     }
   }
 }
