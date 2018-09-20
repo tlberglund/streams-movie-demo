@@ -67,8 +67,8 @@ public class StreamsDemo {
   }
 
   public static KTable<Long, String> getRatedMoviesTable(StreamsBuilder builder,
-                                                          KTable<Long, Double> ratingAverage,
-                                                          SpecificAvroSerde<Movie> movieSerde) {
+                                                         KTable<Long, Double> ratingAverage,
+                                                         SpecificAvroSerde<Movie> movieSerde) {
 
     builder.stream("raw-movies", Consumed.with(Serdes.Long(), Serdes.String()))
         .mapValues(Parser::parseMovie)
@@ -103,10 +103,15 @@ public class StreamsDemo {
 
     KTable<Long, Long> ratingCounts = ratingsById.count();
     KTable<Long, Double> ratingSums = ratingsById.reduce((v1, v2) -> v1 + v2);
-    KTable<Long, Double> ratingAverage =
-        ratingSums.join(ratingCounts, (sum, count) -> sum / count.doubleValue());
 
-    ratingAverage.toStream().to("average-ratings");
+    KTable<Long, Double> ratingAverage = ratingSums.join(ratingCounts,
+                                                         (sum, count) -> sum / count.doubleValue(),
+                                                         Materialized.as("average-ratings"));
+    ratingAverage.toStream()
+        /*.peek((key, value) -> { // debug only
+          System.out.println("key = " + key + ", value = " + value);
+        })*/
+        .to("average-ratings");
     return ratingAverage;
   }
 
@@ -121,7 +126,11 @@ public class StreamsDemo {
     streamsConfiguration
         .put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.Double().getClass().getName());
     streamsConfiguration.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-    streamsConfiguration.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
+    // streamsConfiguration.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
+    // Enable record cache of size 10 MB.
+    streamsConfiguration.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 10 * 1024 * 1024L);
+    // Set commit interval to 1 second.
+    streamsConfiguration.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 1000);
     return streamsConfiguration;
   }
 
