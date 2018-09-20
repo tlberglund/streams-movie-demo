@@ -68,11 +68,26 @@ project(':loader') {
   task loadAvroMovies(type: JavaExec) {
     main = 'AvroMovieLoader'
     classpath = sourceSets.main.runtimeClasspath
-    args "${projectDir}/../data/movies.dat"
+    args "$projectDir/../data/movies.dat"
     args env['KAFKA_BOOTSTRAP_SERVERS'] ?: 'localhost:9092'
   }
 
+}
 
+project(':spring-web-loader') {
+  apply plugin: 'org.springframework.boot'
+  apply plugin: 'io.spring.dependency-management'
+
+  dependencies {
+    compile project(':core')
+
+    compile "org.springframework.boot:spring-boot-starter-web"
+    compile 'org.springframework.kafka:spring-kafka'
+  }
+
+  configurations.all {
+    exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+  }
 }
 
 project(':streams') {
