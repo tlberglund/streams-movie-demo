@@ -1,4 +1,4 @@
-package io.confluent.demo;
+package io.confluent.consumer.demo;
 
 import org.apache.kafka.clients.consumer.Consumer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -19,9 +19,8 @@ public class ConsoleConsumer {
         .run(args);
   }
 
-  @KafkaListener(topics = "rated-movies", groupId = "spring")
-  public void listen(String in,
-                     Consumer<Long, String> consumer) {
+  @KafkaListener(topics = "raw-movies", groupId = "spring")
+  public void listen(String in, Consumer<Long, String> consumer) {
     System.out.println(in);
   }
 
