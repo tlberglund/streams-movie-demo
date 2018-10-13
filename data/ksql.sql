@@ -9,15 +9,14 @@ SET 'auto.offset.reset' = 'earliest';
 
 CREATE STREAM movies_src (movie_id BIGINT, title VARCHAR, release_year INT, country VARCHAR, rating DOUBLE, cinematographer VARCHAR, genres ARRAY<VARCHAR>, directors ARRAY<VARCHAR>, composers ARRAY<varchar>, screenwriters ARRAY<VARCHAR>, production_companies ARRAY<VARCHAR>) WITH (VALUE_FORMAT='JSON', KAFKA_TOPIC='movies');
 
-CREATE STREAM movies_rekeyed AS SELECT * FROM movies_src PARTITION BY movie_id;
+CREATE STREAM movies_rekeyed WITH (PARTITIONS=1) AS SELECT * FROM movies_src PARTITION BY movie_id;
 
 kafkacat -C  -K: -b localhost:9092 -f 'Key:    %k\nValue:  %s\n' -t movies
 kafkacat -C  -K: -b localhost:9092 -f 'Key:    %k\nValue:  %s\n' -t MOVIES_REKEYED
 
 CREATE TABLE movies_ref (movie_id BIGINT, title VARCHAR, release_year INT, country VARCHAR, rating DOUBLE, cinematographer VARCHAR, genres ARRAY<VARCHAR>, directors ARRAY<VARCHAR>, composers ARRAY<varchar>, screenwriters ARRAY<VARCHAR>, production_companies ARRAY<VARCHAR>) WITH (VALUE_FORMAT='JSON', KAFKA_TOPIC='MOVIES_REKEYED', KEY='movie_id');
 
-CREATE TABLE movies_ref  WITH (VALUE_FORMAT='AVRO', KAFKA_TOPIC='MOVIES', KEY='movie_id');
-
+--CREATE TABLE movies_ref  WITH (VALUE_FORMAT='AVRO', KAFKA_TOPIC='MOVIES', KEY='movie_id');
 
 CREATE STREAM ratings (movie_id BIGINT, rating DOUBLE) WITH (VALUE_FORMAT = 'JSON', KAFKA_TOPIC='ratings');
 
