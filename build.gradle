@@ -97,9 +97,13 @@ project(':streams') {
     compile project(':core')
 
     compile 'org.apache.kafka:kafka-streams:2.0.0'
+    compile 'io.confluent:monitoring-interceptors:5.0.0'
 
 //  compile 'io.confluent:kafka-avro-serializer:3.3.0'
 //  compile 'io.confluent:kafka-schema-registry-client:3.3.0'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.apache.kafka:kafka-streams-test-utils:2.0.0'
+    testCompile 'org.projectlombok:lombok:1.16.20'
   }
 
 }
