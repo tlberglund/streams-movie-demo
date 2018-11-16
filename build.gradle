@@ -40,7 +40,7 @@ project(':core') {
     compile 'org.apache.kafka:kafka-clients:2.0.0'
     compile 'javax.json:javax.json-api:1.1.2'
     runtime 'org.glassfish:javax.json:1.1.2'
-    compile 'io.confluent:kafka-streams-avro-serde:4.1.0'
+    compile 'io.confluent:kafka-streams-avro-serde:5.0.0'
   }
 
 }
@@ -111,6 +111,10 @@ project(':streams') {
 project(':spring-streams') {
   apply plugin: 'org.springframework.boot'
   apply plugin: 'io.spring.dependency-management'
+
+  bootJar {
+    mainClassName = "io.confluent.demo.SpringStreamsDemo"
+  }
 
   dependencies {
     compile project(':streams')

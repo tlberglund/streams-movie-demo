@@ -1,13 +1,17 @@
 package io.confluent.demo;
 
+import static io.confluent.demo.StreamsDemo.*;
 import static io.confluent.demo.StreamsDemo.getMovieAvroSerde;
 import static io.confluent.demo.StreamsDemo.getRatedMoviesTable;
 import static io.confluent.demo.StreamsDemo.getRatingAverageTable;
+import static io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig.*;
+import static java.util.Collections.singletonMap;
 
 import java.util.Collections;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KTable;
 
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
@@ -29,10 +33,15 @@ public class KafkaStreamsConfig {
 
   @Bean
   KTable ratedMoviesTable(StreamsBuilder builder, KafkaProperties kafkaProperties) {
-    KTable<Long, Double> ratingAverageTable = getRatingAverageTable(builder);
-    return getRatedMoviesTable(builder, ratingAverageTable, getMovieAvroSerde(
-            Collections.singletonMap(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, (String)
-                kafkaProperties.buildStreamsProperties().get(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG))));
+    final KStream<Long, String> rawRatingsStream = getRawRatingsStream(builder);
+    final KTable<Long, Double> ratingAverageTable = getRatingAverageTable(rawRatingsStream);
+
+    final KTable<Long, Movie> moviesTable = getMoviesTable(
+        builder,
+        getMovieAvroSerde(singletonMap(SCHEMA_REGISTRY_URL_CONFIG,
+                                       (String) kafkaProperties.buildStreamsProperties()
+                                           .get(SCHEMA_REGISTRY_URL_CONFIG))));
+    return getRatedMoviesTable(moviesTable, ratingAverageTable);
   }
 
   @Bean
