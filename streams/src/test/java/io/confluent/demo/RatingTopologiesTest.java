@@ -57,7 +57,7 @@ public class RatingTopologiesTest {
   }
 
   @Test
-  public void validateOverageRating() {
+  public void validateAverageRating() {
     final ConsumerRecordFactory<Long, String>
         rawRatingRecordFactory =
         new ConsumerRecordFactory<>(RAW_RATINGS_TOPIC_NAME, new LongSerializer(),
@@ -71,23 +71,14 @@ public class RatingTopologiesTest {
         o1 =
         testDriver.readOutput(AVERAGE_RATINGS_TOPIC_NAME, new LongDeserializer(),
                               new DoubleDeserializer());
-    final ProducerRecord<Long, Double>
-        o2 =
-        testDriver.readOutput(AVERAGE_RATINGS_TOPIC_NAME, new LongDeserializer(),
-                              new DoubleDeserializer());
-    final ProducerRecord<Long, Double>
-        o3 =
-        testDriver.readOutput(AVERAGE_RATINGS_TOPIC_NAME, new LongDeserializer(),
-                              new DoubleDeserializer());
 
     OutputVerifier.compareKeyValue(o1, 362L, 10.0);
-    OutputVerifier.compareKeyValue(o2, 362L, 5.0);
-    OutputVerifier.compareKeyValue(o3, 362L, 9.0);
 
     final KeyValueStore<Long, Double>
         keyValueStore =
         testDriver.getKeyValueStore("average-ratings");
-    Assert.assertEquals("Message", keyValueStore.get(362L), 9.0, 0.0);
+    final Double expected = keyValueStore.get(362L);
+    Assert.assertEquals("Message", expected, 9.0, 0.0);
   }
 
   @After

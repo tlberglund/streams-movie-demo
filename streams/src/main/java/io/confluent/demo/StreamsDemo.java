@@ -2,8 +2,11 @@ package io.confluent.demo;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.metrics.stats.Rate;
+import org.apache.kafka.common.serialization.Deserializer;
+import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.common.serialization.Serdes.LongSerde;
+import org.apache.kafka.common.serialization.Serializer;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.KeyValue;
@@ -19,10 +22,12 @@ import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.kstream.ValueJoiner;
 import org.apache.kafka.streams.state.KeyValueStore;
 
-import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
 
+import io.confluent.demo.util.CountAndSum;
+import io.confluent.demo.util.CountAndSumDeserializer;
+import io.confluent.demo.util.CountAndSumSerializer;
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 
@@ -143,16 +148,53 @@ public class StreamsDemo {
         .map((key, rating) -> new KeyValue<>(rating.getMovieId(), rating));
 
     // Parsing Ratings
-    KStream<Long, Double> numericRatings = ratings.mapValues(Rating::getRating);
 
-    KGroupedStream<Long, Double> ratingsById = numericRatings.groupByKey();
+    KGroupedStream<Long, Double> ratingsById = ratings.mapValues(Rating::getRating).groupByKey();
+
+    /*
+    as per Matthias' comment https://issues.apache.org/jira/browse/KAFKA-7595?focusedCommentId=16677173&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-16677173
+    implementation
 
     KTable<Long, Long> ratingCounts = ratingsById.count();
     KTable<Long, Double> ratingSums = ratingsById.reduce((v1, v2) -> v1 + v2);
 
-    KTable<Long, Double> ratingAverage = ratingSums.join(ratingCounts,
+    is incorrect
+
+    Implemented best practice https://cwiki.apache.org/confluence/display/KAFKA/Kafka+Stream+Usage+Patterns#KafkaStreamUsagePatterns-Howtocomputean(windowed)average?
+     */
+    final KTable<Long, CountAndSum<Long, Double>> ratingCountAndSum = ratingsById.aggregate(
+        () -> new CountAndSum<>(0L, 0.0),
+        (key, value, aggregate) -> {
+          ++aggregate.count;
+          aggregate.sum += value;
+          return aggregate;
+        }, Materialized.with(new LongSerde(),
+                             new Serde<CountAndSum<Long, Double>>() {
+                               @Override
+                               public void configure(Map<String, ?> configs, boolean isKey) {
+                               }
+
+                               @Override
+                               public void close() {
+                               }
+
+                               @Override
+                               public Serializer<CountAndSum<Long, Double>> serializer() {
+                                 return new CountAndSumSerializer<>();
+                               }
+
+                               @Override
+                               public Deserializer<CountAndSum<Long, Double>> deserializer() {
+                                 return new CountAndSumDeserializer<>();
+                               }
+                             })
+    );
+
+    /*KTable<Long, Double> ratingAverage = ratingSums.join(ratingCounts,
                                                          (sum, count) -> sum / count.doubleValue(),
-                                                         Materialized.as("average-ratings"));
+                                                         Materialized.as("average-ratings"));*/
+    final KTable<Long, Double> ratingAverage = ratingCountAndSum.mapValues(value -> value.sum / value.count,
+                                                                           Materialized.as("average-ratings"));
     ratingAverage.toStream()
         .peek((key, value) -> { // debug only
           System.out.println("key = " + key + ", value = " + value);
@@ -184,4 +226,5 @@ public class StreamsDemo {
     config.put(COMMIT_INTERVAL_MS_CONFIG, 1000);
     return config;
   }
+
 }
