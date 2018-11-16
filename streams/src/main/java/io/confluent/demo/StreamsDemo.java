@@ -2,7 +2,7 @@ package io.confluent.demo;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.Serde;
+import org.apache.kafka.common.metrics.stats.Rate;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.KafkaStreams;
@@ -20,13 +20,13 @@ import org.apache.kafka.streams.kstream.ValueJoiner;
 import org.apache.kafka.streams.state.KeyValueStore;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 
+import static java.util.Collections.singletonMap;
 import static org.apache.kafka.streams.StreamsConfig.APPLICATION_ID_CONFIG;
 import static org.apache.kafka.streams.StreamsConfig.BOOTSTRAP_SERVERS_CONFIG;
 import static org.apache.kafka.streams.StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG;
@@ -50,11 +50,9 @@ public class StreamsDemo {
     final Map<String, String> serdeConfig = getSerdeConfig(SCHEMA_REGISTRY_URL);
 
     final SpecificAvroSerde<Movie> movieSerde = getMovieAvroSerde(serdeConfig);
-
     final SpecificAvroSerde<Rating> ratingSerde = getRatingAvroSerde(serdeConfig);
-
-    final SpecificAvroSerde<RatedMovie> ratedMovieSerde = new SpecificAvroSerde<>();
-    ratingSerde.configure(serdeConfig, false);
+    // TODO: use it as final result
+    final SpecificAvroSerde<RatedMovie> ratedMovieSerde = getRatedMovieAvroSerde(serdeConfig);
 
     // Starting creating topology
     StreamsBuilder builder = new StreamsBuilder();
@@ -64,7 +62,7 @@ public class StreamsDemo {
     KTable<Long, Double> ratingAverage = getRatingAverageTable(rawRatingsStream);
 
     // Movies processors
-    final KTable<Long, Movie> movies = getMoviesTable(builder);
+    final KTable<Long, Movie> movies = getMoviesTable(builder, movieSerde);
 
     getRatedMoviesTable(movies, ratingAverage);
 
@@ -77,19 +75,11 @@ public class StreamsDemo {
     streamsApp.start();
   }
 
-  private static Map<String, String> getSerdeConfig(String srUrl) {
-    return Collections.singletonMap(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG,
-                                    srUrl);
-  }
-
-
-  public static KTable<Long, Movie> getMoviesTable(StreamsBuilder builder) {
+  public static KTable<Long, Movie> getMoviesTable(StreamsBuilder builder,
+                                                   SpecificAvroSerde<Movie> movieSerde) {
     final KStream<Long, String> rawMovies = getRawMoviesStream(builder);
 
     // Parsed movies
-    Serde<Movie> movieSerde = new SpecificAvroSerde<>();
-    movieSerde.configure(new HashMap<>(), false);
-
     rawMovies
         .mapValues(Parser::parseMovie)
         .map((key, movie) -> new KeyValue<>(movie.getMovieId(), movie))
@@ -100,10 +90,9 @@ public class StreamsDemo {
                          Materialized.<Long, Movie, KeyValueStore<Bytes, byte[]>>as("movies-store")
                              .withValueSerde(movieSerde)
                              .withKeySerde(Serdes.Long()));
-
   }
 
-  public static KStream<Long, String> getRawMoviesStream(StreamsBuilder builder) {
+  protected static KStream<Long, String> getRawMoviesStream(StreamsBuilder builder) {
     return builder.stream(RAW_MOVIES_TOPIC_NAME,
                           Consumed.with(Serdes.Long(),
                                         Serdes.String()));
@@ -113,6 +102,10 @@ public class StreamsDemo {
     return builder.stream(RAW_RATINGS_TOPIC_NAME,
                           Consumed.with(Serdes.Long(),
                                         Serdes.String()));
+  }
+
+  private static Map<String, String> getSerdeConfig(String srUrl) {
+    return singletonMap(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, srUrl);
   }
 
   private static SpecificAvroSerde<Rating> getRatingAvroSerde(Map<String, String> serdeConfig) {
@@ -127,17 +120,22 @@ public class StreamsDemo {
     return movieSerde;
   }
 
+  private static SpecificAvroSerde<RatedMovie> getRatedMovieAvroSerde(Map<String, String> serdeConfig) {
+    SpecificAvroSerde<RatedMovie> ratedMovieSerde = new SpecificAvroSerde<>();
+    ratedMovieSerde.configure(serdeConfig, false);
+    return ratedMovieSerde;
+  }
 
   public static KTable<Long, String> getRatedMoviesTable(KTable<Long, Movie> movies,
                                                          KTable<Long, Double> ratingAverage) {
 
+    //TODO: use RatedMovie.class
     ValueJoiner<Double, Movie, String> joiner = (avg, movie) -> movie.getTitle() + "=" + avg;
     KTable<Long, String> ratedMovies = ratingAverage.join(movies, joiner);
 
     ratedMovies.toStream().to("rated-movies", Produced.with(Serdes.Long(), Serdes.String()));
     return ratedMovies;
   }
-
 
   protected static KTable<Long, Double> getRatingAverageTable(KStream<Long, String> rawRatings) {
 
@@ -184,13 +182,6 @@ public class StreamsDemo {
     config.put(CACHE_MAX_BYTES_BUFFERING_CONFIG, 10 * 1024 * 1024L);
     // Set commit interval to 1 second.
     config.put(COMMIT_INTERVAL_MS_CONFIG, 1000);
-
     return config;
   }
-
 }
-
-
-
-
-
