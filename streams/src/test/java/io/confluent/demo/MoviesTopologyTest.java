@@ -1,9 +1,9 @@
 package io.confluent.demo;
 
-import org.apache.kafka.common.serialization.LongDeserializer;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.TopologyTestDriver;
 import org.apache.kafka.streams.state.KeyValueStore;
@@ -12,32 +12,37 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
 import java.util.Properties;
 
-import io.confluent.kafka.streams.serdes.avro.SpecificAvroDeserializer;
+import io.confluent.demo.fixture.MoviesAndRatingsData;
+import io.confluent.kafka.schemaregistry.client.MockSchemaRegistryClient;
+import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 import lombok.extern.slf4j.Slf4j;
 
+import static io.confluent.demo.fixture.MoviesAndRatingsData.*;
+import static io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig.*;
+import static java.util.Collections.singletonMap;
 import static org.junit.Assert.assertNotNull;
 
 @Slf4j
 public class MoviesTopologyTest {
 
-
-  public static String
-      LETHAL_WEAPON_MOVIE =
-      "122::Lethal Weapon 2::1989::110::United States::6.0::48092::Action::Mel Gibson|Danny Glover|Joe Pesci|Patsy Kensit|Joss Ackland|Derrick O'Connor|Traci Wolfe|Darlene Love|Steve Kahan::Richard Donner::Michael Kamen|Eric Clapton|David Sanborn::Jeffrey Boam::Stephen Goldblatt::Warner Bros";
-
   TopologyTestDriver td;
 
   @Before
   public void setUp() {
-    final Properties
-        streamsConfig =
-        StreamsDemo.getStreamsConfig("dummy.kafka.confluent.cloud:9092",
-                                     "dummy.sr.confluent.cloud:8080");
+    final Properties streamsConfig = StreamsDemo.getStreamsConfig(DUMMY_KAFKA_CONFLUENT_CLOUD_9092,
+                                                                  DUMMY_SR_CONFLUENT_CLOUD_8080);
+
+    // workaround https://stackoverflow.com/a/50933452/27563
+    streamsConfig.setProperty(StreamsConfig.STATE_DIR_CONFIG, "/tmp/kafka-streams/" + LocalDateTime.now().toString());
 
     StreamsBuilder builder = new StreamsBuilder();
-    StreamsDemo.getMoviesTable(builder);
+
+    SpecificAvroSerde<Movie> movieSerde = new SpecificAvroSerde<>(new MockSchemaRegistryClient());
+    movieSerde.configure(singletonMap(SCHEMA_REGISTRY_URL_CONFIG, DUMMY_SR_CONFLUENT_CLOUD_8080), false);
+    StreamsDemo.getMoviesTable(builder, movieSerde);
 
     final Topology topology = builder.build();
     log.info("Topology: \n{}", topology.describe());
@@ -60,8 +65,8 @@ public class MoviesTopologyTest {
     //td.readOutput("")
     final KeyValueStore<Long, Movie> movieStore =
         td.getKeyValueStore("movies-store");
-    final Movie movie = movieStore.get(122L);
-    Assert.assertEquals("Lethal Weapon 2", movie.getTitle());
+    final Movie movie = movieStore.get(362L);
+    Assert.assertEquals("Lethal Weapon", movie.getTitle().toString());
 
   }
 }

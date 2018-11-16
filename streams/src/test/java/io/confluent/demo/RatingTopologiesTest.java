@@ -21,6 +21,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Properties;
 
+import io.confluent.demo.fixture.MoviesAndRatingsData;
 import lombok.extern.slf4j.Slf4j;
 
 import static io.confluent.demo.StreamsDemo.AVERAGE_RATINGS_TOPIC_NAME;
@@ -28,6 +29,7 @@ import static io.confluent.demo.StreamsDemo.RAW_RATINGS_TOPIC_NAME;
 import static io.confluent.demo.StreamsDemo.getRatingAverageTable;
 import static io.confluent.demo.StreamsDemo.getRawRatingsStream;
 import static io.confluent.demo.StreamsDemo.getStreamsConfig;
+import static io.confluent.demo.fixture.MoviesAndRatingsData.*;
 import static org.junit.Assert.assertNotNull;
 
 @Slf4j
@@ -62,8 +64,8 @@ public class RatingTopologiesTest {
                                     new StringSerializer());
 
     // Lethal Weapon ratings
-    testDriver.pipeInput(Arrays.asList(rawRatingRecordFactory.create("1::362::10"),
-                                       rawRatingRecordFactory.create("1::362::8")));
+    testDriver.pipeInput(Arrays.asList(rawRatingRecordFactory.create(LETHAL_WEAPON_RATING_10),
+                                       rawRatingRecordFactory.create(LETHAL_WEAPON_RATING_8)));
 
     final ProducerRecord<Long, Double>
         o1 =
