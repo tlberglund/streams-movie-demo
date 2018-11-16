@@ -25,8 +25,9 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import java.util.Map;
 import java.util.Properties;
 
-import io.confluent.demo.util.CountAndSum;
 import io.confluent.demo.util.CountAndSumDeserializer;
+import io.confluent.demo.util.CountAndSumSerde;
+import io.confluent.demo.util.CountAndSum;
 import io.confluent.demo.util.CountAndSumSerializer;
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
@@ -152,7 +153,7 @@ public class StreamsDemo {
     KGroupedStream<Long, Double> ratingsById = ratings.mapValues(Rating::getRating).groupByKey();
 
     /*
-    as per Matthias' comment https://issues.apache.org/jira/browse/KAFKA-7595?focusedCommentId=16677173&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-16677173
+    As per Matthias' comment https://issues.apache.org/jira/browse/KAFKA-7595?focusedCommentId=16677173&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-16677173
     implementation
 
     KTable<Long, Long> ratingCounts = ratingsById.count();
@@ -168,26 +169,17 @@ public class StreamsDemo {
           ++aggregate.count;
           aggregate.sum += value;
           return aggregate;
-        }, Materialized.with(new LongSerde(),
-                             new Serde<CountAndSum<Long, Double>>() {
-                               @Override
-                               public void configure(Map<String, ?> configs, boolean isKey) {
-                               }
+        }, Materialized.with(new LongSerde(), new CountAndSumSerde<Long, Double>() {
+          @Override
+          public Serializer<CountAndSum<Long, Double>> serializer() {
+            return new CountAndSumSerializer<>();
+          }
 
-                               @Override
-                               public void close() {
-                               }
-
-                               @Override
-                               public Serializer<CountAndSum<Long, Double>> serializer() {
-                                 return new CountAndSumSerializer<>();
-                               }
-
-                               @Override
-                               public Deserializer<CountAndSum<Long, Double>> deserializer() {
-                                 return new CountAndSumDeserializer<>();
-                               }
-                             })
+          @Override
+          public Deserializer<CountAndSum<Long, Double>> deserializer() {
+            return new CountAndSumDeserializer<>();
+          }
+        })
     );
 
     /*KTable<Long, Double> ratingAverage = ratingSums.join(ratingCounts,
