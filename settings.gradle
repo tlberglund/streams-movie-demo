@@ -1,1 +1,0 @@
-include 'core', 'streams', 'loader', 'spring-streams', 'spring-web-loader'
